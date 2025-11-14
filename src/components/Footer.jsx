@@ -16,8 +16,6 @@ export default function Footer() {
           <span className="font-semibold text-white/90">Vite</span>
           <span className="text-accent">•</span>
           <span className="font-semibold text-white/90">Tailwind</span>
-          <span className="text-accent">•</span>
-          <span className="font-semibold text-white/90">Framer Motion</span>
         </div>
       </div>
     </footer>
