@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+
+
+import React, { useEffect, useRef, useState, useCallback } from "react";
 
 const navLinks = [
   { name: "Home", href: "#" },
@@ -11,31 +13,26 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(true);
 
-  // Keep refs for last scroll position and rAF id to avoid re-renders
   const lastYRef = useRef(0);
   const tickingRef = useRef(false);
 
   useEffect(() => {
-    lastYRef.current = window.scrollY || 0;
+    lastYRef.current = typeof window !== "undefined" ? window.scrollY : 0;
 
-    function onScroll() {
+    const onScroll = () => {
       if (tickingRef.current) return;
       tickingRef.current = true;
 
-      // use rAF for smoother throttling
       window.requestAnimationFrame(() => {
         const currentY = window.scrollY || 0;
         const lastY = lastYRef.current;
 
-        // if menu open, keep visible
         if (open) {
           setVisible(true);
         } else {
-          // if scrolling down and past threshold -> hide
           if (currentY > lastY && currentY > 80) {
             setVisible(false);
           } else {
-            // scrolling up -> show
             setVisible(true);
           }
         }
@@ -43,15 +40,16 @@ export default function Navbar() {
         lastYRef.current = currentY;
         tickingRef.current = false;
       });
-    }
+    };
 
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [open]);
 
+  const toggleOpen = useCallback(() => setOpen((s) => !s), []);
+
   return (
     <header
-      // translateY to hide/show, nice transition
       className="fixed top-0 left-0 right-0 z-[99999] pointer-events-auto"
       style={{
         transform: visible ? "translateY(0)" : "translateY(-120%)",
@@ -59,19 +57,18 @@ export default function Navbar() {
         willChange: "transform",
       }}
     >
-      {/* FULL-BLEED BACKGROUND BAR (edge-to-edge) */}
       <div
         className="w-full"
         style={{
-          background: "rgba(10,12,15,0.98)",
-          borderBottom: "1px solid rgba(255,255,255,0.03)",
-          boxShadow: "0 14px 40px rgba(0,0,0,0.7)",
-          backdropFilter: "blur(10px)",
+          background:
+            "linear-gradient(90deg, #0a0f1a 0%, #0d1826 50%, #0a0f1a 100%)",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          boxShadow:
+            "0 18px 45px rgba(0,0,0,0.55), inset 0 -1px 6px rgba(0,0,0,0.35)",
+          backdropFilter: "blur(14px) saturate(1.3)",
         }}
       >
-        {/* CENTERED CONTENT */}
         <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-3">
-          {/* Logo */}
           <a
             href="/"
             className="flex items-center gap-3 no-underline select-none"
@@ -80,8 +77,10 @@ export default function Navbar() {
             <div
               className="w-12 h-12 rounded-lg flex items-center justify-center font-extrabold text-black"
               style={{
-                background: "linear-gradient(135deg,#ff7b00,#ffb36b)",
-                boxShadow: "0 6px 18px rgba(0,0,0,0.4)",
+                background: "linear-gradient(135deg,#ff8a00,#ffb76b)",
+                boxShadow:
+                  "0 8px 22px rgba(255,138,0,0.15), 0 2px 8px rgba(0,0,0,0.45)",
+                border: "1px solid rgba(255,255,255,0.08)",
               }}
             >
               VG
@@ -95,13 +94,16 @@ export default function Navbar() {
             </div>
           </a>
 
-          {/* Desktop links */}
-          <nav className="hidden md:flex items-center gap-6">
+          <nav
+            className="hidden md:flex items-center gap-3"
+            aria-label="Primary"
+          >
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="text-white/90 hover:text-white text-sm font-medium transition"
+                className="relative px-4 py-2 rounded-lg bg-white/5 border border-white/8 backdrop-blur-md text-gray-200 hover:bg-white/8 hover:text-white text-sm font-medium transition-shadow shadow-sm hover:shadow-md"
+                style={{ WebkitTapHighlightColor: "transparent" }}
               >
                 {link.name}
               </a>
@@ -109,11 +111,11 @@ export default function Navbar() {
 
             <a
               href="#contact"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-md font-semibold"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               style={{
-                background: "linear-gradient(90deg,#ff7b00,#ffb36b)",
-                color: "#000",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+                background: "linear-gradient(90deg,#ff8a00,#ffb36b)",
+                color: "#071017",
+                boxShadow: "0 8px 24px rgba(255,138,0,0.14)",
               }}
             >
               Contact Sales
@@ -139,12 +141,16 @@ export default function Navbar() {
             </a>
           </nav>
 
-          {/* Mobile button */}
           <button
-            onClick={() => setOpen((s) => !s)}
-            className="md:hidden inline-flex items-center justify-center w-11 h-11 rounded-lg"
-            style={{ background: "rgba(255,255,255,0.08)", color: "#fff" }}
+            onClick={toggleOpen}
+            className="md:hidden inline-flex items-center justify-center w-11 h-11 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              color: "#fff",
+              boxShadow: "0 6px 18px rgba(0,0,0,0.45)",
+            }}
             aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
           >
             {open ? (
               <svg className="w-6 h-6" viewBox="0 0 24 24" aria-hidden>
@@ -169,17 +175,16 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu full width */}
       <div
-        className="md:hidden overflow-hidden transition-all duration-300 w-full"
+        className="md:hidden overflow-hidden transition-[opacity,max-height] duration-300 w-full"
         style={{
-          height: open ? "auto" : 0,
+          maxHeight: open ? 400 : 0,
           opacity: open ? 1 : 0,
-          background: "rgba(10,12,15,0.95)",
-          borderTop: "1px solid rgba(255,255,255,0.05)",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
-          backdropFilter: "blur(10px)",
+          background: "linear-gradient(180deg, #0b1119 0%, #0a1220 100%)",
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+          backdropFilter: "blur(12px)",
         }}
+        aria-hidden={!open}
       >
         {open && (
           <div className="flex flex-col px-6 py-4 max-w-7xl mx-auto">
@@ -187,7 +192,7 @@ export default function Navbar() {
               <a
                 key={link.name}
                 href={link.href}
-                className="py-3 px-2 text-white/95 hover:bg-white/5 rounded-md font-medium transition"
+                className="py-3 px-2 text-gray-100 hover:bg-white/5 rounded-md font-medium transition"
                 onClick={() => setOpen(false)}
               >
                 {link.name}
@@ -198,8 +203,9 @@ export default function Navbar() {
               href="#contact"
               className="mt-3 inline-flex items-center justify-center px-4 py-2 rounded-md font-semibold"
               style={{
-                background: "linear-gradient(90deg,#ff7b00,#ffb36b)",
-                color: "#000",
+                background: "linear-gradient(90deg,#ff8a00,#ffb36b)",
+                color: "#071017",
+                boxShadow: "0 8px 20px rgba(255,138,0,0.12)",
               }}
             >
               Contact Sales

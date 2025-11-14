@@ -1,4 +1,6 @@
+// src/pages/Home.jsx
 import React from "react";
+
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Highlights from "../components/Highlights";
@@ -6,34 +8,25 @@ import ProductCard from "../components/ProductCard";
 import ContactForm from "../components/ContactForm";
 import Footer from "../components/Footer";
 
-/**
- * Home page with a deep, multi-stop vertical gradient background
- * that creates strong color variation from top -> bottom.
- *
- * To adjust colors: edit the `bgGradient` string below (5 stops).
- */
 export default function Home() {
-  // Strong multi-stop gradient — tweak these hex codes to taste
   const bgGradient = `linear-gradient(
     180deg,
-    #071023 0%,   /* deep navy - top */
-    #0b2133 20%,  /* teal-blue */
-    #11283c 45%,  /* stormy blue */
-    #1b1f2a 75%,  /* gunmetal / near-black */
-    #07090b 100%  /* deep charcoal - bottom */
+    #071023 0%,
+    #0b2133 20%,
+    #11283c 45%,
+    #1b1f2a 75%,
+    #07090b 100%
   )`;
 
   return (
     <div
-      className="min-h-screen text-white antialiased"
+      className="min-h-screen text-white antialiased font-inter"
       style={{
         background: bgGradient,
         backgroundAttachment: "fixed",
-        // subtle vignette / radial darkening at bottom edges
         boxShadow: "inset 0 -120px 120px rgba(4,6,8,0.6)",
       }}
     >
-      {/* optional noise overlay (improves texture, low cost) */}
       <svg
         aria-hidden
         className="pointer-events-none fixed inset-0 w-full h-full -z-10"
@@ -59,58 +52,87 @@ export default function Home() {
 
       <main className="pt-[84px]">
         <Hero />
-
-        {/* ===== Capabilities (dark panel) ===== */}
         <section className="w-full bg-transparent border-t border-white/4">
           <div className="max-w-6xl mx-auto px-6 py-20">
             <div className="max-w-3xl">
-              <h2 className="font-poppins text-3xl md:text-4xl font-extrabold mb-3">
+              <h2
+                className="font-poppins text-3xl md:text-4xl font-extrabold mb-3 animate-fadeUp"
+                style={{ animationDelay: "0ms" }}
+              >
                 Our Capabilities
               </h2>
-              <p className="font-inter text-gray-300 mb-10 leading-relaxed">
+
+              <p
+                className="font-inter text-gray-300 mb-10 leading-relaxed animate-fadeUp"
+                style={{ animationDelay: "80ms" }}
+              >
                 Advanced unmanned platforms and systems engineered for
-                endurance, precision delivery, and resilient autonomy — designed
-                for mission success in the most demanding environments.
+                endurance, precision delivery, and resilient autonomy.
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              <ProductCard
-                title="Endurance UAV"
-                desc="Long flight times for wide-area coverage."
-                icon="⟡"
-              />
-              <ProductCard
-                title="Precision Delivery"
-                desc="Accurate payload delivery modules."
-                icon="📦"
-              />
-              <ProductCard
-                title="Autonomous Nav"
-                desc="Robust autonomy for contested environments."
-                icon="⚙"
-              />
+              <div
+                className="animate-fadeUp"
+                style={{ animationDelay: "140ms" }}
+              >
+                <ProductCard
+                  title="Endurance UAV"
+                  desc="Long flight times for wide-area coverage."
+                  icon="⟡"
+                />
+              </div>
+
+              <div
+                className="animate-fadeUp"
+                style={{ animationDelay: "200ms" }}
+              >
+                <ProductCard
+                  title="Precision Delivery"
+                  desc="Accurate payload delivery the modules."
+                  icon="📦"
+                />
+              </div>
+
+              <div
+                className="animate-fadeUp"
+                style={{ animationDelay: "260ms" }}
+              >
+                <ProductCard
+                  title="Autonomous Nav"
+                  desc="Robust autonomy for contested environments."
+                  icon="⚙"
+                />
+              </div>
             </div>
           </div>
         </section>
 
-        {/* ===== Highlights / Why VyomGarud ===== */}
+        {/* Highlights */}
         <section className="bg-transparent border-t border-white/6">
           <div className="max-w-6xl mx-auto px-6 py-20">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
               <div>
-                <h3 className="font-poppins text-3xl font-extrabold mb-4">
+                <h3
+                  className="font-poppins text-3xl font-extrabold mb-4 animate-fadeUp"
+                  style={{ animationDelay: "320ms" }}
+                >
                   Why VyomGarud
                 </h3>
-                <p className="font-inter text-gray-300 mb-6 max-w-xl">
+
+                <p
+                  className="font-inter text-gray-300 mb-6 max-w-xl animate-fadeUp"
+                  style={{ animationDelay: "360ms" }}
+                >
                   We combine rugged hardware, secure communications, and
-                  mission-proven autonomy to deliver systems that operators can
-                  rely on — from long-endurance surveillance to precision
-                  payload delivery.
+                  mission-proven autonomy.
                 </p>
 
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <li className="flex gap-3 items-start">
+                  <li
+                    className="flex gap-3 items-start animate-fadeUp"
+                    style={{ animationDelay: "420ms" }}
+                  >
                     <div className="flex-none w-10 h-10 rounded-lg bg-accent flex items-center justify-center text-black font-semibold">
                       ⟡
                     </div>
@@ -119,12 +141,15 @@ export default function Home() {
                         Long Endurance
                       </div>
                       <div className="text-sm text-gray-400 font-inter">
-                        14+ hour flight envelopes on optimized platforms
+                        14+ hour flight envelopes
                       </div>
                     </div>
                   </li>
 
-                  <li className="flex gap-3 items-start">
+                  <li
+                    className="flex gap-3 items-start animate-fadeUp"
+                    style={{ animationDelay: "460ms" }}
+                  >
                     <div className="flex-none w-10 h-10 rounded-lg bg-accent flex items-center justify-center text-black font-semibold">
                       ⚙
                     </div>
@@ -138,7 +163,10 @@ export default function Home() {
                     </div>
                   </li>
 
-                  <li className="flex gap-3 items-start">
+                  <li
+                    className="flex gap-3 items-start animate-fadeUp"
+                    style={{ animationDelay: "500ms" }}
+                  >
                     <div className="flex-none w-10 h-10 rounded-lg bg-accent flex items-center justify-center text-black font-semibold">
                       🔒
                     </div>
@@ -152,7 +180,10 @@ export default function Home() {
                     </div>
                   </li>
 
-                  <li className="flex gap-3 items-start">
+                  <li
+                    className="flex gap-3 items-start animate-fadeUp"
+                    style={{ animationDelay: "540ms" }}
+                  >
                     <div className="flex-none w-10 h-10 rounded-lg bg-accent flex items-center justify-center text-black font-semibold">
                       🛠
                     </div>
@@ -168,25 +199,36 @@ export default function Home() {
                 </ul>
               </div>
 
-              <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 border border-white/6 rounded-2xl p-6 shadow-2xl">
+              <div
+                className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 border border-white/6 rounded-2xl p-6 shadow-2xl animate-fadeUp"
+                style={{ animationDelay: "600ms" }}
+              >
                 <Highlights />
               </div>
             </div>
           </div>
         </section>
-
-        {/* ===== Contact ===== */}
         <section id="contact" className="max-w-6xl mx-auto px-6 py-16">
           <div className="max-w-3xl mx-auto">
-            <h2 className="font-poppins text-2xl md:text-3xl font-semibold mb-4">
+            <h2
+              className="font-poppins text-2xl md:text-3xl font-semibold mb-4 animate-fadeUp"
+              style={{ animationDelay: "660ms" }}
+            >
               Contact Us
             </h2>
-            <p className="font-inter text-gray-300 mb-6">
-              Tell us about your requirements — our sales and engineering teams
-              will respond within one business day.
+
+            <p
+              className="font-inter text-gray-300 mb-6 animate-fadeUp"
+              style={{ animationDelay: "700ms" }}
+            >
+              Tell us about your requirements — our teams will respond within
+              one business day.
             </p>
 
-            <div className="bg-[#0b1116dd] border border-white/8 rounded-2xl p-8 shadow-lg">
+            <div
+              className="bg-[#0b1116dd] border border-white/8 rounded-2xl p-8 shadow-lg animate-fadeUp"
+              style={{ animationDelay: "760ms" }}
+            >
               <ContactForm />
             </div>
           </div>

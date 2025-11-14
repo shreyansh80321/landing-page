@@ -1,51 +1,75 @@
-import React, { useState } from "react";
+
+import React, { useState, useCallback } from "react";
 
 export default function ContactForm() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState({
+    sent: false,
+    sending: false,
+    error: "",
+  });
 
-  function handleChange(e) {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const inputBase =
+    "mt-2 w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-gray-100 placeholder-gray-400 focus:border-accent focus:ring-2 focus:ring-accent/70 outline-none transition";
+
+  const handleChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  }, []);
+
+  async function fakeSend(payload) {
+    return new Promise((res) => setTimeout(() => res({ ok: true }), 900));
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      if (status.sending) return;
+      setStatus({ sent: false, sending: true, error: "" });
 
-    console.log("send", form);
-
-    setSent(true);
-    setForm({ name: "", email: "", message: "" });
-
-    setTimeout(() => setSent(false), 4000); // auto hide
-  }
+      try {
+        const res = await fakeSend(form);
+        if (!res || !res.ok) throw new Error("Failed to send");
+        setForm({ name: "", email: "", message: "" });
+        setStatus({ sent: true, sending: false, error: "" });
+        setTimeout(() => setStatus((s) => ({ ...s, sent: false })), 4000);
+      } catch (err) {
+        setStatus({
+          sent: false,
+          sending: false,
+          error: "Could not send message. Try again.",
+        });
+      }
+    },
+    [form, status.sending]
+  );
 
   return (
     <form
-      className="
-        max-w-xl mx-auto
-        bg-[#0b1116dd]
-        backdrop-blur-md
-        border border-white/10
-        rounded-2xl 
-        p-8
-        shadow-[0_10px_40px_rgba(0,0,0,0.4)]
-        font-inter
-      "
       onSubmit={handleSubmit}
+      className="max-w-xl mx-auto bg-[#0b1116dd] backdrop-blur-md border border-white/10 rounded-2xl p-8 shadow-[0_10px_40px_rgba(0,0,0,0.4)] font-inter"
+      noValidate
     >
-      {/* Success Message */}
-      {sent && (
-        <div className="mb-4 py-3 px-4 rounded-md bg-green-600/20 border border-green-600/30 text-green-300 font-medium">
-          Message sent — we'll get back to you soon.
+      {(status.sent || status.error) && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={`mb-4 py-3 px-4 rounded-md font-medium ${
+            status.sent
+              ? "bg-green-600/20 border border-green-600/30 text-green-300"
+              : "bg-rose-600/10 border border-rose-600/30 text-rose-300"
+          }`}
+        >
+          {status.sent
+            ? "Message sent — we'll get back to you soon."
+            : status.error}
         </div>
       )}
 
-      {/* Heading */}
       <h2 className="text-2xl font-poppins font-semibold text-white mb-6">
         Contact Us
       </h2>
 
-      {/* Name */}
       <label className="block mb-5">
         <span className="text-sm font-montserrat text-gray-300">Name</span>
         <input
@@ -53,22 +77,12 @@ export default function ContactForm() {
           value={form.name}
           onChange={handleChange}
           required
-          className="
-            mt-2 w-full px-4 py-3 
-            rounded-lg 
-            bg-white/5 
-            border border-white/10 
-            text-gray-100 
-            placeholder-gray-400
-            focus:border-accent focus:ring-2 focus:ring-accent/70
-            outline-none
-            transition
-          "
           placeholder="Your full name"
+          aria-label="Full name"
+          className={inputBase}
         />
       </label>
 
-      {/* Email */}
       <label className="block mb-5">
         <span className="text-sm font-montserrat text-gray-300">Email</span>
         <input
@@ -77,22 +91,12 @@ export default function ContactForm() {
           value={form.email}
           onChange={handleChange}
           required
-          className="
-            mt-2 w-full px-4 py-3 
-            rounded-lg 
-            bg-white/5 
-            border border-white/10 
-            text-gray-100 
-            placeholder-gray-400
-            focus:border-accent focus:ring-2 focus:ring-accent/70
-            outline-none
-            transition
-          "
           placeholder="you@example.com"
+          aria-label="Email address"
+          className={inputBase}
         />
       </label>
 
-      {/* Message */}
       <label className="block mb-6">
         <span className="text-sm font-montserrat text-gray-300">Message</span>
         <textarea
@@ -100,37 +104,24 @@ export default function ContactForm() {
           rows={5}
           value={form.message}
           onChange={handleChange}
-          className="
-            mt-2 w-full px-4 py-3 
-            rounded-lg 
-            bg-white/5 
-            border border-white/10 
-            text-gray-100
-            placeholder-gray-400 
-            resize-none
-            focus:border-accent focus:ring-2 focus:ring-accent/70
-            outline-none
-            transition
-          "
+          required
           placeholder="Tell us about your project..."
+          aria-label="Message"
+          className={`${inputBase} resize-none`}
         />
       </label>
 
-      {/* Button */}
       <button
         type="submit"
-        className="
-          w-full px-5 py-3 
-          bg-gradient-to-r from-accent to-accent/80
-          text-black 
-          font-poppins font-semibold 
-          rounded-lg 
-          shadow-lg 
-          hover:brightness-95
-          transition
-        "
+        disabled={status.sending}
+        aria-disabled={status.sending}
+        className={`w-full px-5 py-3 text-white font-poppins font-semibold rounded-lg shadow-lg transition transform ${
+          status.sending
+            ? "opacity-70 cursor-wait"
+            : "hover:brightness-95 active:scale-[.997]"
+        } bg-gradient-to-r from-accent to-accent/80`}
       >
-        Send Message
+        {status.sending ? "Sending..." : "Send Message"}
       </button>
     </form>
   );

@@ -1,40 +1,60 @@
 // src/hooks/useRevealOnScroll.js
 import { useEffect } from "react";
 
-/**
- * useRevealOnScroll
- * - Observes elements with attribute `data-reveal`
- * - When element intersects, adds class `reveal-visible`
- * - If prefers-reduced-motion is true, marks elements visible immediately
- *
- * Usage: import and call inside a component (no args).
- */
 export default function useRevealOnScroll(prefersReducedMotion = false) {
   useEffect(() => {
-    const els = Array.from(document.querySelectorAll("[data-reveal]"));
+    if (typeof document === "undefined") return;
 
+    const els = Array.from(document.querySelectorAll("[data-reveal]"));
     if (!els.length) return;
 
-    // If reduced motion, reveal immediately and don't observe
     if (prefersReducedMotion) {
       els.forEach((el) => el.classList.add("reveal-visible"));
       return;
     }
 
-    const observer = new IntersectionObserver(
+    els.forEach((el, i) => {
+      const explicit = el.getAttribute("data-reveal-delay");
+      if (explicit) {
+        el.style.animationDelay = explicit;
+      } else {
+        el.style.animationDelay = `${i * 90}ms`;
+      }
+      el.style.willChange = "opacity, transform";
+    });
+
+    const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("reveal-visible");
-            observer.unobserve(entry.target); // reveal once
+          if (!entry.isIntersecting) return;
+          const node = entry.target;
+          node.classList.add("reveal-visible");
+          io.unobserve(node);
+          // optional: remove will-change after animation completes
+          const duration =
+            parseFloat(getComputedStyle(node).animationDuration) || 0;
+          const delay = parseFloat(node.style.animationDelay) || 0;
+          const total = (duration + delay) * 1000;
+          if (total > 0) {
+            setTimeout(() => {
+              try {
+                node.style.willChange = "";
+              } catch {}
+            }, total + 100);
+          } else {
+            node.style.willChange = "";
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.15, rootMargin: "0px 0px -10% 0px" }
     );
 
-    els.forEach((el) => observer.observe(el));
+    els.forEach((el) => io.observe(el));
 
-    return () => observer.disconnect();
+    return () => {
+      try {
+        io.disconnect();
+      } catch {}
+    };
   }, [prefersReducedMotion]);
 }

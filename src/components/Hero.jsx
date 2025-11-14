@@ -1,7 +1,7 @@
 // src/components/Hero/Hero.jsx
 import React from "react";
-import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
-import useRevealOnScroll from "../hooks/useRevealOnScroll";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion.js";
+import useRevealOnScroll from "../hooks/useRevealOnScroll.js";
 
 export default function Hero() {
   const reduced = usePrefersReducedMotion();
@@ -12,16 +12,14 @@ export default function Hero() {
       className="relative min-h-[75vh] md:min-h-[85vh] flex items-center text-white overflow-hidden font-inter"
       aria-label="VyomGarud hero"
     >
-      {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center -z-10"
         style={{
-          backgroundImage: "url('/assets/hero-bg.jpg')",
+          // backgroundImage: `url(${heroBg})`,
           filter: "brightness(0.45) contrast(1.02)",
         }}
       />
 
-      {/* Gradient */}
       <div
         className="absolute inset-0 -z-5"
         style={{
@@ -32,7 +30,6 @@ export default function Hero() {
 
       <div className="container relative z-10 py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          {/* Left Section */}
           <div>
             <h1
               data-reveal
@@ -52,8 +49,6 @@ export default function Hero() {
               long-endurance operations, secure autonomy, and precision payload
               delivery.
             </p>
-
-            {/* CTAs */}
             <div
               data-reveal
               className="reveal mt-8 flex flex-wrap gap-3 items-center"
@@ -86,8 +81,6 @@ export default function Hero() {
                 View Products
               </a>
             </div>
-
-            {/* Features */}
             <div
               data-reveal
               className="reveal mt-8 flex flex-wrap gap-3 font-montserrat"
@@ -111,7 +104,6 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Right card */}
           <div className="hidden md:flex justify-end">
             <div
               data-reveal
