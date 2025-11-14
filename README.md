@@ -29,6 +29,26 @@ The design is inspired by **military-grade UAV systems**: dark UI, warm gradient
 
 ---
 
+
+## 📸 Screenshots
+
+### 🏠 Hero Section  
+![VyomGarud Hero](screenshots/hero.png)
+
+### ⚙️ Capabilities Section  
+![Capabilities](screenshots/capabilities.png)
+
+### ⭐ Highlights Section  
+![Highlights](screenshots/highlights.png)
+
+### ✉️ Contact Section  
+![Contact](screenshots/contact.png)
+
+### 🔚 Footer  
+![Footer](screenshots/footer.png)
+
+
+
 ## 📦 Installation & Setup
 
 ### 1️⃣ Clone the repo
